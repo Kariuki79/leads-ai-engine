@@ -1,0 +1,1059 @@
+{
+  "name": "Workflow A: The Inquiry Processor",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "56a0f554-7c00-4ac5-b788-b3243c16f25e",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        736,
+        -144
+      ],
+      "id": "b260d9f9-7c7e-4822-9a71-c67fa3fb2c34",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 4000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        80
+      ],
+      "id": "c416cd03-d3e1-4da3-ae5e-7eb64604a8b6",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "upb8DnpikynZESNJ",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "outputFieldName": "today",
+        "options": {
+          "includeInputFields": true
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        64,
+        -144
+      ],
+      "id": "5161ec8e-b4f2-4165-9433-4f8fa3ac070c",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"priority\": { \"type\": \"string\" },\n    \"category\": { \"type\": \"string\" },\n    \"action\": { \"type\": \"string\" }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1328,
+        80
+      ],
+      "id": "5fd12c40-58bc-47ea-869c-00c09c08970b",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output.priority }}",
+                    "rightValue": "high",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "e79025bf-07bf-452d-89bf-6ea12ac616fc"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8e2f2939-fc2f-41c5-949b-1fdb2d98fe0d",
+                    "leftValue": "={{ $json.output.priority }}",
+                    "rightValue": "medium",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "67f9c0b8-ba12-45ca-99a5-0bc935ec7f15",
+                    "leftValue": "={{ $json.output.priority }}",
+                    "rightValue": "low",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1536,
+        -176
+      ],
+      "id": "d1107ac9-f0ec-41ba-a341-a8910626ac9a",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "mwangi.kariuki.fredrick@gmail.com",
+        "subject": "={{ $json.output.priority }}",
+        "emailType": "text",
+        "message": "This is a high priority message",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1952,
+        -320
+      ],
+      "id": "ab5c2fea-3a84-40bf-9e0d-b4bb57da8f86",
+      "name": "Send a message1",
+      "webhookId": "7328298e-cbdd-4113-8b0a-b46c6f540b37",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "L2rlToo4sV6GH20v",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a18fc7f5-351f-4d3e-9e66-ce5a7fe1ae4d",
+              "leftValue": "={{ $json.output.priority }}",
+              "rightValue": "high",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "a7a41f20-991d-4480-89ad-e1e6ee97e915",
+              "leftValue": "={{ $('Normalize: Generate Inquiry Fingerprint').item.json.due_date }}",
+              "rightValue": "={{ $('Date & Time').item.json.today }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1744,
+        -304
+      ],
+      "id": "f1b048e6-ddf0-4823-804b-40e612ea1f14",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"Message\": \"Already in the list.\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        960,
+        144
+      ],
+      "id": "774b4dea-bb9c-497f-a425-6b4d45f0959d",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8fe529bb-a739-4721-8c6f-83eb3cab6ec7",
+              "name": "task",
+              "value": "={{ $json.body.task }}",
+              "type": "string"
+            },
+            {
+              "id": "d5c23be7-f516-4b92-a1be-3c9352418423",
+              "name": "owner",
+              "value": "={{ $json.body.owner }}",
+              "type": "string"
+            },
+            {
+              "id": "eb6cf021-837b-4f2a-a36a-6f5ad3bd6eb7",
+              "name": "due_date",
+              "value": "={{ $json.body.due_date }}",
+              "type": "string"
+            },
+            {
+              "id": "93ef096d-fb62-49c8-b40a-e26f778ab51d",
+              "name": "source",
+              "value": "webhook",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -128,
+        -144
+      ],
+      "id": "1dffb591-5ade-4603-b907-ebaf6332b40f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "789382a9-5944-4c26-9951-fbb7cd1690c8",
+              "name": "task",
+              "value": "={{ $json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "6bb026d2-6086-4731-8ec3-4463db0b07b9",
+              "name": "owner",
+              "value": "={{ $json.headers.from }}",
+              "type": "string"
+            },
+            {
+              "id": "5d140f6f-99fe-4636-a4b9-b568b83a85db",
+              "name": "due_date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "c573fc49-17b1-4c5c-ad55-9bf6ee1a0fce",
+              "name": "source",
+              "value": "gmail",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -144,
+        -400
+      ],
+      "id": "bb3739f4-07be-4755-9ebe-14a256c4367a",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "d93a431e-4e77-4a12-8c4e-ba2b75f2bf60",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -352,
+        -144
+      ],
+      "id": "ec4e2b3a-3a43-4f13-9ca4-03b5cd2453ca",
+      "name": "Webhook: Ingest External Inquiry",
+      "webhookId": "d93a431e-4e77-4a12-8c4e-ba2b75f2bf60"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -368,
+        -400
+      ],
+      "id": "5dc8ec83-fd59-4bb4-9253-165b28beb9cd",
+      "name": "Trigger: Poll Incoming Tenant Emails",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "L2rlToo4sV6GH20v",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalize the data to create a deterministic ID\nconst task = $json.task || \"\";\nconst owner = $json.owner || \"unknown\";\nconst dueDate = $json.due_date || \"no-date\";\n\n// Combine, lowercase, and strip everything except letters and numbers\nconst rawString = `${task}${owner}${dueDate}`.toLowerCase();\nconst fingerprint = rawString.replace(/[^a-z0-9]/g, \"\");\n\nreturn {\n  ...$json, // Keep original data\n  fingerprint: fingerprint\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        -144
+      ],
+      "id": "fdf2d8ff-8b89-4068-821b-f084e442e7e1",
+      "name": "Normalize: Generate Inquiry Fingerprint"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY",
+          "mode": "list",
+          "cachedResultName": "Learning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Fingerprint",
+              "lookupValue": "={{ $json.fingerprint }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        512,
+        -144
+      ],
+      "id": "524dd3a2-9bfa-4773-b106-dace787cb1fc",
+      "name": "Normalize: Generate Standard Timestamps",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "rDfgUNuBhZljOeJW",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Normalize: Generate Inquiry Fingerprint').item.json.task }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Return ONLY a JSON object with these keys:\n\n'priority' (high/medium/low),\n\n'category' (sales/support/admin),\n\n'action' (follow_up/ignore/escalate).\n\nDo not include any explanation or backticks.\"\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1184,
+        -160
+      ],
+      "id": "eefaf038-2651-41ce-8c08-fddd63a1f0d2",
+      "name": "AI: Analyze Priority, Category, and Action"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY",
+          "mode": "list",
+          "cachedResultName": "Learning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Processing \"IN_PROGRESS\"",
+            "Task": "={{ $('Normalize: Generate Inquiry Fingerprint').item.json.task }}",
+            "Due Date": "={{ $('Normalize: Generate Inquiry Fingerprint').item.json.due_date }}",
+            "Owner": "={{ $('Normalize: Generate Inquiry Fingerprint').item.json.owner }}",
+            "Fingerprint": "={{ $('Normalize: Generate Inquiry Fingerprint').item.json.fingerprint }}",
+            "Date and Time": "={{ $('Normalize: Generate Inquiry Fingerprint').item.json.today }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fingerprint",
+              "displayName": "Fingerprint",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner",
+              "displayName": "Owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Action",
+              "displayName": "Action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date and Time",
+              "displayName": "Date and Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        960,
+        -160
+      ],
+      "id": "74330e7c-9b97-40f9-80a7-63da02c275a1",
+      "name": "Write: Initialize Processing Task",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "rDfgUNuBhZljOeJW",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY",
+          "mode": "list",
+          "cachedResultName": "Learning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Priority": "={{ $('Switch').item.json.output.priority }}",
+            "Category": "={{ $('Switch').item.json.output.category }}",
+            "Action": "={{ $('Switch').item.json.output.action }}",
+            "Status": "Alerted",
+            "Task": "={{ $('Normalize: Generate Inquiry Fingerprint').item.json.task }}"
+          },
+          "matchingColumns": [
+            "Task"
+          ],
+          "schema": [
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner",
+              "displayName": "Owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Action",
+              "displayName": "Action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date and Time",
+              "displayName": "Date and Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2176,
+        -320
+      ],
+      "id": "e9145c87-477c-458d-a0c0-61eacb33ca05",
+      "name": "Update: Finalize Processed Record",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "rDfgUNuBhZljOeJW",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY",
+          "mode": "list",
+          "cachedResultName": "Learning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Task": "={{ $('Webhook: Ingest External Inquiry').item.json.body.task }}",
+            "Priority": "={{ $('AI: Analyze Priority, Category, and Action').item.json.output.priority }}",
+            "Category": "={{ $('AI: Analyze Priority, Category, and Action').item.json.output.category }}",
+            "Action": "={{ $('AI: Analyze Priority, Category, and Action').item.json.output.action }}",
+            "Due Date": "={{ $('Date & Time').item.json.body.due_date }}",
+            "Owner": "={{ $('Date & Time').item.json.body.owner }}",
+            "Status": "Processed"
+          },
+          "matchingColumns": [
+            "Task"
+          ],
+          "schema": [
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner",
+              "displayName": "Owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Action",
+              "displayName": "Action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1760,
+        -48
+      ],
+      "id": "229ac0e3-4f5c-42f2-92b2-a150be6f16c7",
+      "name": "Update: Finalize Processed Record1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "rDfgUNuBhZljOeJW",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Write: Initialize Processing Task",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI: Analyze Priority, Category, and Action",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Normalize: Generate Inquiry Fingerprint",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI: Analyze Priority, Category, and Action",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update: Finalize Processed Record1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Update: Finalize Processed Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook: Ingest External Inquiry": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger: Poll Incoming Tenant Emails": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize: Generate Inquiry Fingerprint": {
+      "main": [
+        [
+          {
+            "node": "Normalize: Generate Standard Timestamps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize: Generate Standard Timestamps": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Analyze Priority, Category, and Action": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write: Initialize Processing Task": {
+      "main": [
+        [
+          {
+            "node": "AI: Analyze Priority, Category, and Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "Dd9QvaB72eyAFyNn",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "20a2223f-8d05-4ca9-8cc3-f794d0ffc4bb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "174b822e170774ba14d083a38e293489762207248eee27aeaba21b5ec14d7fa1"
+  },
+  "id": "irespTYrCsKJ2gjS",
+  "tags": [
+    {
+      "name": "Build 4",
+      "id": "zvS4nFdwnRH8aduo",
+      "updatedAt": "2026-05-12T01:50:41.786Z",
+      "createdAt": "2026-05-12T01:50:41.786Z"
+    }
+  ]
+}

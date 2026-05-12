@@ -1,0 +1,331 @@
+{
+  "name": "Workflow B: The Error & Recovery Handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        0
+      ],
+      "id": "f99ab7d1-dcec-479e-88c3-b3f107ffa692",
+      "name": "Trigger: System Execution Failure"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY",
+          "mode": "list",
+          "cachedResultName": "Learning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/199uAb3zftouHJj5Qe3A1SFmLb7EsewkVSLxTc6vcVDY/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "Processing \"IN_PROGRESS\""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -96,
+        0
+      ],
+      "id": "94161ee1-229c-4aa6-ac77-2fb60387ccef",
+      "name": "Lookup: Active Failed Records",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "rDfgUNuBhZljOeJW",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "row_number",
+              "order": "descending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        112,
+        0
+      ],
+      "id": "39535185-fe90-44f0-ac1f-368ad778c0ab",
+      "name": "Normalize: Isolate Recent Failure State"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        320,
+        0
+      ],
+      "id": "31df3e74-189d-419f-9148-ba26b94f568a",
+      "name": "Normalize: Isolate Recent Failure State1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1eJ64PtIFLDOHWb0d0_j1DAC04S7j-G_-yMO-jVietxA",
+          "mode": "list",
+          "cachedResultName": "Mini  Build 5",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eJ64PtIFLDOHWb0d0_j1DAC04S7j-G_-yMO-jVietxA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eJ64PtIFLDOHWb0d0_j1DAC04S7j-G_-yMO-jVietxA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "FAILED",
+            "Fingerprint": "={{ $json.Fingerprint }}",
+            "Task": "={{ $json.Task }}",
+            "Due Date": "={{ $json[\"Due Date\"] }}",
+            "Owner": "={{ $json.Owner }}",
+            "Priority": "={{ $json.Priority }}",
+            "Category": "={{ $json.Category }}",
+            "Action": "={{ $json.Action }}",
+            "Date and Time": "={{ $json[\"Date and Time\"] }}",
+            "row_number": 0
+          },
+          "matchingColumns": [
+            "Fingerprint"
+          ],
+          "schema": [
+            {
+              "id": "Fingerprint",
+              "displayName": "Fingerprint",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner",
+              "displayName": "Owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Action",
+              "displayName": "Action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date and Time",
+              "displayName": "Date and Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        528,
+        0
+      ],
+      "id": "4fd427cf-c7ac-4aca-990f-3bf09f8c0afd",
+      "name": "Update: Mark Task as FAILED",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "rDfgUNuBhZljOeJW",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8506365347",
+        "text": "=⚠️ SYSTEM ALERT\n\nTask: {{ $json.Task }}\nFingerprint: {{ $json.Fingerprint }}\nError: {{ $node[\"Trigger: System Execution Failure\"].json.execution.error.message }}\n\nCheck the logs here: {{ $node[\"Trigger: System Execution Failure\"].json.execution.url }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        0
+      ],
+      "id": "8f1da1af-060a-49cd-b2b5-a18c2015e041",
+      "name": "Alert: Dispatch System Error Notification",
+      "webhookId": "4430f629-63b7-4bc6-9780-3b255c847553",
+      "credentials": {
+        "telegramApi": {
+          "id": "v9dmTKPTREAmoE37",
+          "name": "Thika Leads"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Trigger: System Execution Failure": {
+      "main": [
+        [
+          {
+            "node": "Lookup: Active Failed Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup: Active Failed Records": {
+      "main": [
+        [
+          {
+            "node": "Normalize: Isolate Recent Failure State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize: Isolate Recent Failure State": {
+      "main": [
+        [
+          {
+            "node": "Normalize: Isolate Recent Failure State1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize: Isolate Recent Failure State1": {
+      "main": [
+        [
+          {
+            "node": "Update: Mark Task as FAILED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update: Mark Task as FAILED": {
+      "main": [
+        [
+          {
+            "node": "Alert: Dispatch System Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "08f3cbdd-0351-45e5-80de-cee0116357b1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "174b822e170774ba14d083a38e293489762207248eee27aeaba21b5ec14d7fa1"
+  },
+  "id": "Dd9QvaB72eyAFyNn",
+  "tags": []
+}
