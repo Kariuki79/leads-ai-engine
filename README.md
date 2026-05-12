@@ -1,4 +1,4 @@
-# Thika Leads: AI-Driven Task & Inquiry Processor
+# Potential Leads: AI-Driven Task & Inquiry Processor
 
 An enterprise-grade automation suite built with **n8n** to ingest, fingerprint, and triage incoming business inquiries. The system features a deterministic de-duplication engine and an autonomous error-handling circuit to ensure 99.9% data integrity.
 
@@ -19,4 +19,3 @@ The suite consists of two primary engines:
 ## 👤 Developer
 **Kariuki Mwangi**  
 *AI Automation Engineer*  
-Thika, Kiambu County, Kenya
